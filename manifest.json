@@ -1,6 +1,6 @@
 {
   "required_api_version": "2",
-  "name": "Google Tasks",
+  "name": "Google Tasks Manager",
   "description": "Manage your Google Tasks - view, add, complete, and delete tasks with strikethrough animation",
   "developer_name": "arif-itm",
   "icon": "images/icon.svg",

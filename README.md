@@ -1,6 +1,6 @@
 <div align="center">
   <img src="images/icon.svg" width="96" alt="Google Tasks logo" />
-  <h1 align="center">Google Tasks</h1>
+  <h1 align="center">Google Tasks Manager</h1>
   <p align="center">
     A Ulauncher extension for managing your Google Tasks — view, add, complete, search,<br />
     and delete tasks and lists with instant local caching and a satisfying strikethrough effect.
