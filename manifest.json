@@ -2,7 +2,7 @@
   "required_api_version": "2",
   "name": "Google Tasks",
   "description": "Manage your Google Tasks - view, add, complete, and delete tasks with strikethrough animation",
-  "developer_name": "Ulauncher-GTask",
+  "developer_name": "arif-itm",
   "icon": "images/icon.svg",
   "options": {
     "query_debounce": 0.3
@@ -29,6 +29,13 @@
       "description": "Whether to show completed tasks in lists",
       "default_value": "Hide",
       "options": ["Hide", "Show"]
+    },
+    {
+      "id": "result_limit",
+      "type": "text",
+      "name": "Result Limit",
+      "description": "Maximum number of tasks to show (leave empty for no limit)",
+      "default_value": ""
     }
   ]
 }

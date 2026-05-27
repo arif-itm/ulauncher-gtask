@@ -2,8 +2,8 @@
   <img src="images/icon.svg" width="96" alt="Google Tasks logo" />
   <h1 align="center">Google Tasks</h1>
   <p align="center">
-    A Ulauncher extension for managing your Google Tasks — view, add, complete, and delete tasks<br />
-    with a satisfying strikethrough effect, all without leaving your keyboard.
+    A Ulauncher extension for managing your Google Tasks — view, add, complete, search,<br />
+    and delete tasks and lists with instant local caching and a satisfying strikethrough effect.
   </p>
   <p align="center">
     <a href="#features">Features</a> •
@@ -26,12 +26,15 @@
 
 ## Features
 
+- **Instant local cache** — tasks load from disk cache in under 1ms. No waiting for API on every keystroke
 - **Browse task lists** — explore all your Google Task lists and drill into each one
-- **Add tasks** — quick-add with a single command: `gt add Buy groceries`
-- **Complete tasks** — click to mark done; the task animates with strikethrough text and a green checkmark
-- **Delete tasks** — click a completed task to remove it permanently
-- **Instant sync** — every action hits the live Google Tasks API, so changes appear on all your devices
-- **Customizable** — keyword, default list, and completed-task visibility are all configurable from Ulauncher Preferences
+- **Add tasks** — `gt new Buy groceries` → click to confirm
+- **Create lists** — `gt newlist Shopping` → click to confirm
+- **Complete / uncomplete tasks** — click to toggle between done and undone (strikethrough + green checkmark)
+- **Delete tasks** — `gt del <search>` → click to confirm, click again to delete
+- **Delete lists** — `gt dellist <search>` → click to confirm, click again to delete (all tasks in the list are lost)
+- **Search & filter** — type any part of a list or task name to instantly filter
+- **Customizable** — keyword, default list, completed-task visibility, and result limit are all configurable from Ulauncher Preferences
 - **Zero dependencies** — built entirely on Python's standard library. No `pip install` required.
 
 ## Demo
@@ -110,23 +113,26 @@ ulauncher --no-extensions --dev -v
 
 ### Commands
 
-| Action | Input |
-|---|---|
-| Browse task lists | `gt` |
-| Filter task lists | `gt <list name>` |
-| Open a list | Click the list name |
-| Browse tasks | `gt` (after selecting a list) |
-| Filter tasks | `gt <task title>` |
-| Add a task | `gt add <task title>` |
-| Complete a task | Click the task |
-| Delete a task | Click the completed (strikethrough) task |
-| Go back to lists | `gt back` |
+| Keyword | Context | Action |
+|---|---|---|
+| `gt` | lists level | Browse all task lists |
+| `gt <search>` | lists level | Filter task lists by name |
+| (click list) | lists level | Open list and show its tasks |
+| `gt` | inside list | Browse all tasks |
+| `gt <search>` | inside list | Filter tasks by title |
+| `gt new <title>` | any | Show confirm → add to current list (or default/first) |
+| `gt newlist <name>` | lists level | Show confirm → create new task list |
+| `gt del <search>` | inside list | Show tasks → click to confirm → click again to delete |
+| `gt dellist <search>` | lists level | Show lists → click to confirm → click again to delete |
+| `gt back` | any | Go back to lists level |
+| (click uncompleted task) | inside list | Mark task as completed (strikethrough + green icon) |
+| (click completed task) | inside list | Un-complete task (restore to active) |
 
 ### Key bindings
 
 | Key | Action |
 |---|---|
-| <kbd>Enter</kbd> | Complete task / open list / authenticate |
+| <kbd>Enter</kbd> | Execute action / open list / authenticate / confirm delete |
 | <kbd>Esc</kbd> | Close Ulauncher |
 
 ## Customization
@@ -138,6 +144,7 @@ Open **Ulauncher Preferences → Extensions → Google Tasks**:
 | Keyword | Trigger word for the extension | `gt` |
 | Default Task List | List used when adding tasks without selecting one first | *(first list)* |
 | Show Completed Tasks | Whether completed tasks appear in lists | `Hide` |
+| Result Limit | Maximum tasks to show per list (leave empty for no limit) | *(unlimited)* |
 
 ## Architecture
 
@@ -164,12 +171,15 @@ Open **Ulauncher Preferences → Extensions → Google Tasks**:
 │  │  └─ auto-refresh on expiry                           │   │
 │  └──────────────────────────────────────────────────────┘   │
 │  ┌──────────────────────────────────────────────────────┐   │
-│  │ GoogleTasksClient (REST)                             │   │
+│  │ GoogleTasksClient (REST + local cache)                 │   │
+│  │  ├─ cache.json (disk persistence)                    │   │
 │  │  ├─ list_tasklists()                                 │   │
 │  │  ├─ list_tasks()                                     │   │
 │  │  ├─ insert_task()                                    │   │
-│  │  ├─ complete_task()                                  │   │
-│  │  └─ delete_task()                                    │   │
+│  │  ├─ complete_task() / uncomplete_task()              │   │
+│  │  ├─ delete_task() / delete_tasklist()                │   │
+│  │  ├─ create_tasklist()                                │   │
+│  │  └─ sync_all()                                       │   │
 │  └──────────────────────────────────────────────────────┘   │
 └─────────────────────────┬───────────────────────────────────┘
                           │ HTTPS (raw urllib)
@@ -178,6 +188,15 @@ Open **Ulauncher Preferences → Extensions → Google Tasks**:
 └─────────────────────────────────────────────────────────────┘
 ```
 
+## Local caching
+
+All data is stored in `cache.json` in the extension directory. On first launch, the extension fetches all lists and tasks from Google and saves them locally.
+
+- **Reads** (listing, searching, filtering) are served from disk cache — **under 1ms**
+- **Writes** (add, complete, uncomplete, delete) call the API first, then update the cache
+- The cache is never automatically re-synced from Google after initial fetch — only updated when you make changes
+- Delete `cache.json` manually to force a re-fetch on next launch
+
 ## Strikethrough effect
 
 When you complete a task, the extension:
@@ -185,9 +204,9 @@ When you complete a task, the extension:
 1. Calls the Google Tasks API to mark it as `completed`
 2. Renders the task title with the Unicode combining long stroke overlay (`\u0336`) applied to each character — producing `c̶o̶m̶p̶l̶e̶t̶e̶d̶`
 3. Swaps the icon to `images/checked.svg` (green checkmark)
-4. On your next query, completed tasks are hidden (unless you toggle **Show Completed Tasks**)
+4. Click again to **uncomplete** — the task returns to active state
 
-The change is instantly synced to all your devices via Google.
+Completed tasks are hidden by default unless you toggle **Show Completed Tasks** in Preferences.
 
 ## File structure
 
@@ -199,9 +218,10 @@ The change is instantly synced to all your devices via Google.
 ├── versions.json              # Extension API version mapping
 ├── manifest.json              # Extension metadata & user preferences
 ├── main.py                    # Ulauncher extension entry point
-├── gtask_client.py            # OAuth 2.0 + Google Tasks REST client
+├── gtask_client.py            # OAuth 2.0 + Google Tasks REST client + local cache
 ├── credentials.json           # Your Google Cloud OAuth credentials (user-provided)
 ├── token.json                 # Auto-generated OAuth session (do not commit)
+├── cache.json                 # Auto-generated local cache of all lists and tasks
 ├── .gitignore
 ├── LICENSE
 └── README.md
@@ -221,7 +241,7 @@ Currently, the extension supports one account at a time. To switch, delete <code
 
 <details>
 <summary><strong>Are my tasks stored locally?</strong></summary>
-No. The extension acts as a read/write proxy to the Google Tasks API. Tasks are fetched live every time you search, and changes are written directly to Google's servers.
+Yes and no. A local cache (<code>cache.json</code>) stores the last known state of all lists and tasks so that browsing and searching are instant. Writes (add, complete, uncomplete, delete) go directly to Google's API and then update the cache. You can delete <code>cache.json</code> at any time — it will be re-fetched from Google on the next launch.
 </details>
 
 <details>

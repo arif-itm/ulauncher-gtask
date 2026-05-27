@@ -1,6 +1,13 @@
-import os, json, time, uuid, webbrowser, urllib.request, urllib.parse, urllib.error
+import json
 import logging
-from http.server import HTTPServer, BaseHTTPRequestHandler
+import os
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+import uuid
+import webbrowser
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from threading import Event
 
 logger = logging.getLogger(__name__)
@@ -144,8 +151,41 @@ class GoogleTasksAuth:
 class GoogleTasksClient:
     API_BASE = 'https://tasks.googleapis.com/tasks/v1'
 
-    def __init__(self, auth):
+    def __init__(self, auth, cache_path):
         self.auth = auth
+        self.cache_path = cache_path
+        self._cache = {}
+        self._load_cache()
+
+    def _load_cache(self):
+        if os.path.exists(self.cache_path):
+            try:
+                with open(self.cache_path) as f:
+                    self._cache = json.load(f)
+            except Exception:
+                self._cache = {'tasklists': [], 'tasks': {}}
+        else:
+            self._cache = {'tasklists': [], 'tasks': {}}
+
+    def _save_cache(self):
+        tmp = self.cache_path + '.tmp'
+        with open(tmp, 'w') as f:
+            json.dump(self._cache, f, indent=2)
+        os.replace(tmp, self.cache_path)
+
+    def _cache_get_tasklists(self):
+        return self._cache.get('tasklists', [])
+
+    def _cache_set_tasklists(self, lists):
+        self._cache['tasklists'] = lists
+        self._save_cache()
+
+    def _cache_get_tasks(self, tasklist_id):
+        return self._cache.get('tasks', {}).get(tasklist_id, [])
+
+    def _cache_set_tasks(self, tasklist_id, tasks):
+        self._cache.setdefault('tasks', {})[tasklist_id] = tasks
+        self._save_cache()
 
     def _request(self, method, path, body=None, params=None):
         access_token = self.auth.get_access_token()
@@ -170,22 +210,90 @@ class GoogleTasksClient:
             raise Exception(f'Google Tasks API error ({e.code}): {error}')
 
     def list_tasklists(self):
-        return self._request('GET', '/users/@me/lists', params={'maxResults': 100})
+        cached = self._cache_get_tasklists()
+        if cached:
+            return {'items': cached}
+        result = self._request('GET', '/users/@me/lists', params={'maxResults': 100})
+        items = result.get('items', [])
+        self._cache_set_tasklists(items)
+        return result
 
-    def list_tasks(self, tasklist_id, show_completed=True):
-        return self._request('GET', f'/lists/{tasklist_id}/tasks', params={
-            'showHidden': 'true', 'showCompleted': str(show_completed).lower(), 'maxResults': 100,
+    def list_tasks(self, tasklist_id, show_completed=True, max_results=None):
+        cached = self._cache_get_tasks(tasklist_id)
+        if cached:
+            tasks = [t for t in cached if show_completed or t.get('status') != 'completed']
+            if max_results is not None:
+                tasks = tasks[:max_results]
+            return {'items': tasks}
+        result = self._request('GET', f'/lists/{tasklist_id}/tasks', params={
+            'showHidden': 'true', 'showCompleted': 'true', 'maxResults': 100,
         })
+        items = result.get('items', [])
+        self._cache_set_tasks(tasklist_id, items)
+        tasks = [t for t in items if show_completed or t.get('status') != 'completed']
+        if max_results is not None:
+            tasks = tasks[:max_results]
+        return {'items': tasks}
 
     def insert_task(self, tasklist_id, title, notes=None, due=None):
-        return self._request('POST', f'/lists/{tasklist_id}/tasks', body={
+        result = self._request('POST', f'/lists/{tasklist_id}/tasks', body={
             'title': title, 'status': 'needsAction',
             **({'notes': notes} if notes else {}),
             **({'due': due} if due else {}),
         })
+        tasks = self._cache_get_tasks(tasklist_id)
+        tasks.append(result)
+        self._cache_set_tasks(tasklist_id, tasks)
+        return result
 
     def complete_task(self, tasklist_id, task_id):
-        return self._request('PATCH', f'/lists/{tasklist_id}/tasks/{task_id}', body={'status': 'completed'})
+        result = self._request('PATCH', f'/lists/{tasklist_id}/tasks/{task_id}', body={'status': 'completed'})
+        tasks = self._cache_get_tasks(tasklist_id)
+        for t in tasks:
+            if t['id'] == task_id:
+                t['status'] = 'completed'
+                break
+        self._cache_set_tasks(tasklist_id, tasks)
+        return result
 
     def delete_task(self, tasklist_id, task_id):
-        return self._request('DELETE', f'/lists/{tasklist_id}/tasks/{task_id}')
+        self._request('DELETE', f'/lists/{tasklist_id}/tasks/{task_id}')
+        tasks = self._cache_get_tasks(tasklist_id)
+        self._cache_set_tasks(tasklist_id, [t for t in tasks if t['id'] != task_id])
+        return {}
+
+    def delete_tasklist(self, tasklist_id):
+        self._request('DELETE', f'/users/@me/lists/{tasklist_id}')
+        lists = self._cache_get_tasklists()
+        self._cache['tasklists'] = [tl for tl in lists if tl['id'] != tasklist_id]
+        self._cache['tasks'].pop(tasklist_id, None)
+        self._save_cache()
+        return {}
+
+    def create_tasklist(self, title):
+        result = self._request('POST', '/users/@me/lists', body={'title': title})
+        lists = self._cache_get_tasklists()
+        lists.append(result)
+        self._cache_set_tasklists(lists)
+        return result
+
+    def uncomplete_task(self, tasklist_id, task_id):
+        result = self._request('PATCH', f'/lists/{tasklist_id}/tasks/{task_id}', body={'status': 'needsAction'})
+        tasks = self._cache_get_tasks(tasklist_id)
+        for t in tasks:
+            if t['id'] == task_id:
+                t['status'] = 'needsAction'
+                break
+        self._cache_set_tasks(tasklist_id, tasks)
+        return result
+
+    def sync_all(self):
+        lists_result = self._request('GET', '/users/@me/lists', params={'maxResults': 100})
+        lists = lists_result.get('items', [])
+        self._cache_set_tasklists(lists)
+        for tl in lists:
+            tasks_result = self._request('GET', f'/lists/{tl["id"]}/tasks', params={
+                'showHidden': 'true', 'showCompleted': 'true', 'maxResults': 100,
+            })
+            self._cache_set_tasks(tl['id'], tasks_result.get('items', []))
+        return lists_result
