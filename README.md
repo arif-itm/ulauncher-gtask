@@ -27,7 +27,7 @@
 
 - **Instant local cache** — tasks load from disk cache in under 1ms. No waiting for API on every keystroke
 - **Browse task lists** — explore all your Google Task lists and drill into each one
-- **Add tasks** — `gt new Buy groceries` → click to confirm
+- **Add tasks** — `gt new air ticket` → click to confirm
 - **Create lists** — `gt newlist Travel🧳` → click to confirm
 - **Complete / uncomplete tasks** — click to toggle between done and undone (strikethrough + green checkmark)
 - **Delete tasks** — `gt del <search>` → click to confirm, click again to delete
@@ -201,9 +201,9 @@ Completed tasks are hidden by default unless you toggle **Show Completed Tasks**
 | | |
 |---|---|
 | ![Task Lists](images/screenshot/01-lists.png) | ![New List](images/screenshot/02-newlist.png) |
-| **Task Lists** — browse all lists | **Create List** — `gt newlist Shopping` |
+| **Task Lists** — browse all lists | **Create List** — `gt newlist Travel🧳` |
 | ![New Task](images/screenshot/03-new-task.png) | ![Task Added](images/screenshot/04-new-task-success.png) |
-| **Add Task** — `gt new Buy air ticket` → confirm | **Task Created** — confirmation result |
+| **Add Task** — `gt new air ticket` → confirm | **Task Created** — confirmation result |
 | ![Completed](images/screenshot/05-task-completed.png) | ![Delete Task](images/screenshot/06-del-task.png) |
 | **Complete** — strikethrough + green icon | **Delete Task** — `gt del` → confirm twice |
 | ![Delete List](images/screenshot/07-dellist.png) | ![Settings](images/screenshot/08-extension-settings.png) |
