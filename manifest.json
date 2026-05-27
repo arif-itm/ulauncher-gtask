@@ -1,0 +1,34 @@
+{
+  "required_api_version": "2",
+  "name": "Google Tasks",
+  "description": "Manage your Google Tasks - view, add, complete, and delete tasks with strikethrough animation",
+  "developer_name": "Ulauncher-GTask",
+  "icon": "images/icon.svg",
+  "options": {
+    "query_debounce": 0.3
+  },
+  "preferences": [
+    {
+      "id": "gt_kw",
+      "type": "keyword",
+      "name": "Google Tasks",
+      "description": "Keyword to trigger Google Tasks extension",
+      "default_value": "gt"
+    },
+    {
+      "id": "default_list",
+      "type": "text",
+      "name": "Default Task List",
+      "description": "Task list to use for quick add (leave empty for first list)",
+      "default_value": ""
+    },
+    {
+      "id": "show_completed",
+      "type": "select",
+      "name": "Show Completed Tasks",
+      "description": "Whether to show completed tasks in lists",
+      "default_value": "Hide",
+      "options": ["Hide", "Show"]
+    }
+  ]
+}
