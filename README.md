@@ -41,10 +41,10 @@
 
 | Step | Screenshot |
 |---|---|---|
-| Task lists | ![Task lists](images/demo-lists.png) |
-| Tasks in a list | ![Tasks in a list](images/demo-tasks.png) |
-| Adding a task | ![Adding a task](images/demo-add.png) |
-| Completing a task (strikethrough) | ![Completing a task](images/demo-complete.png) |
+| Task lists | Todo |
+| Tasks in a list | Todo |
+| Adding a task | Todo |
+| Completing a task (strikethrough) | Todo |
 
 ## Requirements
 
