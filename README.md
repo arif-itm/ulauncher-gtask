@@ -7,7 +7,6 @@
   </p>
   <p align="center">
     <a href="#features">Features</a> •
-    <a href="#demo">Demo</a> •
     <a href="#requirements">Requirements</a> •
     <a href="#installation">Installation</a> •
     <a href="#setup">Setup</a> •
@@ -36,15 +35,6 @@
 - **Search & filter** — type any part of a list or task name to instantly filter
 - **Customizable** — keyword, default list, completed-task visibility, and result limit are all configurable from Ulauncher Preferences
 - **Zero dependencies** — built entirely on Python's standard library. No `pip install` required.
-
-## Demo
-
-| Step | Screenshot |
-|---|---|---|
-| Task lists | Todo |
-| Tasks in a list | Todo |
-| Adding a task | Todo |
-| Completing a task (strikethrough) | Todo |
 
 ## Requirements
 
@@ -172,13 +162,11 @@ Open **Ulauncher Preferences → Extensions → Google Tasks**:
 │  └──────────────────────────────────────────────────────┘   │
 │  ┌──────────────────────────────────────────────────────┐   │
 │  │ GoogleTasksClient (REST + local cache)                 │   │
-│  │  ├─ cache.json (disk persistence)                    │   │
-│  │  ├─ list_tasklists()                                 │   │
-│  │  ├─ list_tasks()                                     │   │
-│  │  ├─ insert_task()                                    │   │
+│  │  ├─ cache.json (disk)                                │   │
+│  │  ├─ list_tasklists() / list_tasks()                  │   │
+│  │  ├─ insert_task() / create_tasklist()                │   │
 │  │  ├─ complete_task() / uncomplete_task()              │   │
 │  │  ├─ delete_task() / delete_tasklist()                │   │
-│  │  ├─ create_tasklist()                                │   │
 │  │  └─ sync_all()                                       │   │
 │  └──────────────────────────────────────────────────────┘   │
 └─────────────────────────┬───────────────────────────────────┘
@@ -229,25 +217,13 @@ Completed tasks are hidden by default unless you toggle **Show Completed Tasks**
 
 ## FAQ
 
-<details>
-<summary><strong>Why does the extension need OAuth credentials?</strong></summary>
-Google Tasks is a personal API that requires authentication. The extension uses OAuth 2.0 with a local server to authorize your account. Your credentials and tokens stay on your machine.
-</details>
+**Why does the extension need OAuth credentials?** Google Tasks is a personal API that requires authentication. The extension uses OAuth 2.0 with a local server to authorize your account. Your credentials and tokens stay on your machine.
 
-<details>
-<summary><strong>Can I use this with multiple Google accounts?</strong></summary>
-Currently, the extension supports one account at a time. To switch, delete <code>token.json</code> from the extension directory and re-authenticate.
-</details>
+**Can I use this with multiple Google accounts?** The extension supports one account at a time. To switch, delete `token.json` from the extension directory and re-authenticate.
 
-<details>
-<summary><strong>Are my tasks stored locally?</strong></summary>
-Yes and no. A local cache (<code>cache.json</code>) stores the last known state of all lists and tasks so that browsing and searching are instant. Writes (add, complete, uncomplete, delete) go directly to Google's API and then update the cache. You can delete <code>cache.json</code> at any time — it will be re-fetched from Google on the next launch.
-</details>
+**Are my tasks stored locally?** Yes and no. A local cache (`cache.json`) stores the last known state of all lists and tasks so that browsing and searching are instant. Writes (add, complete, uncomplete, delete) go directly to Google's API and then update the cache. You can delete `cache.json` at any time — it will be re-fetched from Google on the next launch.
 
-<details>
-<summary><strong>What happens if my token expires?</strong></summary>
-The extension automatically refreshes the token using the refresh token provided by Google during initial authorization. If the refresh token also expires (e.g., account password change), you'll be prompted to re-authenticate.
-</details>
+**What happens if my token expires?** The extension automatically refreshes the token using the refresh token provided by Google during initial authorization. If the refresh token also expires (e.g., account password change), you'll be prompted to re-authenticate.
 
 ## License
 
