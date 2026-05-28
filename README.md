@@ -214,8 +214,10 @@ Completed tasks are hidden by default unless you toggle **Show Completed Tasks**
 ```
 ~/.local/share/ulauncher/extensions/Ulauncher-GTask/
 ├── images/
-│   ├── icon.svg               # Google Tasks logo
+│   ├── icon.svg               # Task icon (Google Tasks logo)
 │   ├── checked.svg            # Green checkmark (completed state)
+│   ├── list.svg               # List icon
+│   ├── back.svg               # Back button arrow
 │   └── screenshot/            # Demo screenshots
 ├── versions.json              # Extension API version mapping
 ├── manifest.json              # Extension metadata & user preferences
