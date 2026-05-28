@@ -198,26 +198,24 @@ Completed tasks are hidden by default unless you toggle **Show Completed Tasks**
 
 ## Screenshots
 
-1. **Browse lists** — type `gt` to see all your task lists
-   ![Task Lists](images/screenshot/lists.png)
-
-2. **View tasks** — click a list to see its tasks
-   ![List Tasks](images/screenshot/list-tasks.png)
-
-3. **Create a list** — `gt newlist Work 💼` → click to confirm
-   ![New List](images/screenshot/newlist.png)
-
-4. **Add a task** — `gt new Review pull requests` → click to confirm
-   ![New Task](images/screenshot/new-task.png)
-
-5. **Delete a task** — `gt del` → click to select, click again to confirm
-   ![Delete Task](images/screenshot/del-task.png)
-
-6. **Delete a list** — `gt dellist` → click to select, click again to confirm
-   ![Delete List](images/screenshot/del-list.png)
-
-7. **Preferences** — customize keyword, default list, and more
-   ![Settings](images/screenshot/extension-settings.png)
+<table>
+  <tr>
+    <td align="center"><img src="images/screenshot/lists.png" width="400"><br><b>1. Browse lists</b><br><code>gt</code></td>
+    <td align="center"><img src="images/screenshot/list-tasks.png" width="400"><br><b>2. View tasks</b><br>Click a list</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="images/screenshot/newlist.png" width="400"><br><b>3. Create a list</b><br><code>gt newlist Work 💼</code></td>
+    <td align="center"><img src="images/screenshot/new-task.png" width="400"><br><b>4. Add a task</b><br><code>gt new Review pull requests</code></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="images/screenshot/del-task.png" width="400"><br><b>5. Delete a task</b><br><code>gt del</code> → confirm twice</td>
+    <td align="center"><img src="images/screenshot/del-list.png" width="400"><br><b>6. Delete a list</b><br><code>gt dellist</code> → confirm twice</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="images/screenshot/extension-settings.png" width="400"><br><b>7. Preferences</b><br>Customize in Ulauncher</td>
+    <td></td>
+  </tr>
+</table>
 
 ## File structure
 
