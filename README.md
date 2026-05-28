@@ -33,7 +33,7 @@
 - **Toggle complete** — click to complete (strikethrough), click again to uncomplete
 - **Confirmation flow** — all destructive actions require a second click
 - **Customizable** — keyword, default list, completed visibility, result limit
-- **Zero dependencies** — pure Python stdlib, no `pip install`
+- **Zero dependencies** — pure Python stdlib, `no pip install`
 
 ## Screenshots
 
