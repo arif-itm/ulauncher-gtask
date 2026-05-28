@@ -25,17 +25,14 @@
 
 ## Features
 
-- **OAuth 2.0 authentication** — one-click sign-in with your Google account via local server
-- **Instant local cache** — tasks load from disk cache in under 1ms. No waiting for API on every keystroke
-- **Browse task lists** — explore all your Google Task lists and drill into each one
-- **Add tasks** — `gt new air ticket` → click to confirm
-- **Create lists** — `gt newlist Travel🧳` → click to confirm
-- **Complete / uncomplete tasks** — click to toggle between done and undone (strikethrough + green checkmark)
-- **Delete tasks** — `gt del <search>` → click to confirm, click again to delete
-- **Delete lists** — `gt dellist <search>` → click to confirm, click again to delete (all tasks in the list are lost)
-- **Search & filter** — type any part of a list or task name to instantly filter
-- **Customizable** — keyword, default list, completed-task visibility, and result limit are all configurable from Ulauncher Preferences
-- **Zero dependencies** — built entirely on Python's standard library. No `pip install` required.
+- **OAuth 2.0 authentication** — one-click sign-in with your Google account
+- **Instant local cache** — reads from disk in under 1ms, no API waiting
+- **Browse, add, complete, uncomplete, delete** — full task and list management
+- **Search & filter** — type to instantly filter lists and tasks
+- **Toggle complete** — click to complete (strikethrough), click again to uncomplete
+- **Confirmation flow** — all destructive actions require a second click
+- **Customizable** — keyword, default list, completed visibility, result limit
+- **Zero dependencies** — pure Python stdlib, no `pip install`
 
 ## Requirements
 
