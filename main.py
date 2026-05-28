@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 DIR = os.path.dirname(os.path.abspath(__file__))
 ICON = 'images/icon.svg'
 CHECKED = 'images/checked.svg'
+LIST_ICON = 'images/list.svg'
 
 
 def strikethrough(text):
@@ -138,7 +139,7 @@ class KeywordQueryEventListener(EventListener):
             lists = [tl for tl in lists if q in tl['title'].lower()]
 
         return render([
-            item(tl['title'], 'Google Task List',
+            item(tl['title'], 'Google Task List', icon=LIST_ICON,
                  data={'action': 'select_list', 'list_id': tl['id'], 'list_title': tl['title']})
             for tl in lists
         ]) if lists else render([
@@ -229,7 +230,7 @@ class KeywordQueryEventListener(EventListener):
             lists = [tl for tl in lists if q in tl['title'].lower()]
 
         return render([
-            item(tl['title'], 'Click to delete this list (all tasks lost)',
+            item(tl['title'], 'Click to delete this list (all tasks lost)', icon=LIST_ICON,
                  data={'action': 'dellist_click', 'list_id': tl['id'], 'list_title': tl['title']})
             for tl in lists
         ]) if lists else render([
