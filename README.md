@@ -7,6 +7,7 @@
   </p>
   <p align="center">
     <a href="#features">Features</a> •
+    <a href="#screenshots">Screenshots</a> •
     <a href="#requirements">Requirements</a> •
     <a href="#installation">Installation</a> •
     <a href="#setup">Setup</a> •
@@ -34,6 +35,27 @@
 - **Customizable** — keyword, default list, completed visibility, result limit
 - **Zero dependencies** — pure Python stdlib, no `pip install`
 
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><img src="images/screenshot/sign-in.png" width="400"><br><b>1. Sign in</b><br>Click to authorize Google</td>
+    <td align="center"><img src="images/screenshot/lists.png" width="400"><br><b>2. Browse lists</b><br><code>gt</code></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="images/screenshot/list-tasks.png" width="400"><br><b>3. View tasks</b><br>Click a list</td>
+    <td align="center"><img src="images/screenshot/newlist.png" width="400"><br><b>4. Create a list</b><br><code>gt newlist Work 💼</code></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="images/screenshot/new-task.png" width="400"><br><b>5. Add a task</b><br><code>gt new Review pull requests</code></td>
+    <td align="center"><img src="images/screenshot/del-task.png" width="400"><br><b>6. Delete a task</b><br><code>gt del</code> → confirm twice</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="images/screenshot/del-list.png" width="400"><br><b>7. Delete a list</b><br><code>gt dellist</code> → confirm twice</td>
+    <td align="center"><img src="images/screenshot/extension-settings.png" width="400"><br><b>8. Preferences</b><br>Customize in Ulauncher</td>
+  </tr>
+</table>
+
 ## Requirements
 
 - [Ulauncher](https://ulauncher.io) 5.15+ (Extension API v2)
@@ -45,7 +67,7 @@
 ```bash
 # Clone the repository into the Ulauncher extensions directory
 git clone https://github.com/arif-itm/ulauncher-gtask.git \
-  ~/.local/share/ulauncher/extensions/Ulauncher-GTask
+  ~/.local/share/ulauncher/extensions/ulauncher-gtask
 ```
 
 Then enable the extension in **Ulauncher Preferences → Extensions**.
@@ -82,7 +104,7 @@ This extension uses the official Google Tasks API, which requires OAuth 2.0 cred
 
 ```bash
 cp ~/Downloads/client_secret_*.json \
-  ~/.local/share/ulauncher/extensions/Ulauncher-GTask/credentials.json
+  ~/.local/share/ulauncher/extensions/ulauncher-gtask/credentials.json
 ```
 
 ## Usage
@@ -194,31 +216,10 @@ When you complete a task, the extension:
 
 Completed tasks are hidden by default unless you toggle **Show Completed Tasks** in Preferences.
 
-## Screenshots
-
-<table>
-  <tr>
-    <td align="center"><img src="images/screenshot/sign-in.png" width="400"><br><b>1. Sign in</b><br>Click to authorize Google</td>
-    <td align="center"><img src="images/screenshot/lists.png" width="400"><br><b>2. Browse lists</b><br><code>gt</code></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="images/screenshot/list-tasks.png" width="400"><br><b>3. View tasks</b><br>Click a list</td>
-    <td align="center"><img src="images/screenshot/newlist.png" width="400"><br><b>4. Create a list</b><br><code>gt newlist Work 💼</code></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="images/screenshot/new-task.png" width="400"><br><b>5. Add a task</b><br><code>gt new Review pull requests</code></td>
-    <td align="center"><img src="images/screenshot/del-task.png" width="400"><br><b>6. Delete a task</b><br><code>gt del</code> → confirm twice</td>
-  </tr>
-  <tr>
-    <td align="center"><img src="images/screenshot/del-list.png" width="400"><br><b>7. Delete a list</b><br><code>gt dellist</code> → confirm twice</td>
-    <td align="center"><img src="images/screenshot/extension-settings.png" width="400"><br><b>8. Preferences</b><br>Customize in Ulauncher</td>
-  </tr>
-</table>
-
 ## File structure
 
 ```
-~/.local/share/ulauncher/extensions/Ulauncher-GTask/
+~/.local/share/ulauncher/extensions/ulauncher-gtask/
 ├── images/
 │   ├── icon.svg               # Task icon (Google Tasks logo)
 │   ├── checked.svg            # Green checkmark (completed state)
