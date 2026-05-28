@@ -164,7 +164,7 @@ class KeywordQueryEventListener(EventListener):
             tasks = [t for t in tasks if q in t['title'].lower()]
 
         items = [item('\u2190 Back to lists', extension.selected_list_title or 'Task Lists',
-                      data={'action': 'back'})]
+                      icon=None, data={'action': 'back'})]
         for task in tasks:
             is_completed = task.get('status') == 'completed'
             notes = (task.get('notes') or '')[:100]
@@ -205,7 +205,7 @@ class KeywordQueryEventListener(EventListener):
             tasks = [t for t in tasks if q in t['title'].lower()]
 
         items = [item('\u2190 Back to lists', extension.selected_list_title or 'Task Lists',
-                      data={'action': 'back'})]
+                      icon=None, data={'action': 'back'})]
         if not tasks:
             items.append(item('No tasks found', on_enter=DoNothingAction()))
         for task in tasks:
