@@ -199,15 +199,15 @@ Completed tasks are hidden by default unless you toggle **Show Completed Tasks**
 ## Screenshots
 
 | | |
-|---|---|
-| ![Task Lists](images/screenshot/01-lists.png) | ![New List](images/screenshot/02-newlist.png) |
-| **Task Lists** — browse all lists | **Create List** — `gt newlist Travel🧳` |
-| ![New Task](images/screenshot/03-new-task.png) | ![Task Added](images/screenshot/04-new-task-success.png) |
-| **Add Task** — `gt new air ticket` → confirm | **Task Created** — confirmation result |
-| ![Completed](images/screenshot/05-task-completed.png) | ![Delete Task](images/screenshot/06-del-task.png) |
-| **Complete** — strikethrough + green icon | **Delete Task** — `gt del` → confirm twice |
-| ![Delete List](images/screenshot/07-dellist.png) | ![Settings](images/screenshot/08-extension-settings.png) |
-| **Delete List** — `gt dellist` → confirm twice | **Preferences** — customizable in Ulauncher |
+|---|---|---|
+| ![Task Lists](images/screenshot/lists.png) | ![List Tasks](images/screenshot/list-tasks.png) |
+| **Task Lists** — browse all lists | **List Tasks** — browse tasks inside a list |
+| ![New List](images/screenshot/newlist.png) | ![New Task](images/screenshot/new-task.png) |
+| **Create List** — `gt newlist Work 💼` → confirm | **Add Task** — `gt new Review pull requests` → confirm |
+| ![Delete Task](images/screenshot/del-task.png) | ![Delete List](images/screenshot/del-list.png) |
+| **Delete Task** — `gt del` → confirm twice | **Delete List** — `gt dellist` → confirm twice |
+| ![Settings](images/screenshot/extension-settings.png) | |
+| **Preferences** — customizable in Ulauncher | |
 
 ## File structure
 
