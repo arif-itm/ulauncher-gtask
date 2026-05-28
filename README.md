@@ -25,6 +25,7 @@
 
 ## Features
 
+- **OAuth 2.0 authentication** — one-click sign-in with your Google account via local server
 - **Instant local cache** — tasks load from disk cache in under 1ms. No waiting for API on every keystroke
 - **Browse task lists** — explore all your Google Task lists and drill into each one
 - **Add tasks** — `gt new air ticket` → click to confirm
@@ -200,20 +201,20 @@ Completed tasks are hidden by default unless you toggle **Show Completed Tasks**
 
 <table>
   <tr>
-    <td align="center"><img src="images/screenshot/lists.png" width="400"><br><b>1. Browse lists</b><br><code>gt</code></td>
-    <td align="center"><img src="images/screenshot/list-tasks.png" width="400"><br><b>2. View tasks</b><br>Click a list</td>
+    <td align="center"><img src="images/screenshot/sign-in.png" width="400"><br><b>1. Sign in</b><br>Click to authorize Google</td>
+    <td align="center"><img src="images/screenshot/lists.png" width="400"><br><b>2. Browse lists</b><br><code>gt</code></td>
   </tr>
   <tr>
-    <td align="center"><img src="images/screenshot/newlist.png" width="400"><br><b>3. Create a list</b><br><code>gt newlist Work 💼</code></td>
-    <td align="center"><img src="images/screenshot/new-task.png" width="400"><br><b>4. Add a task</b><br><code>gt new Review pull requests</code></td>
+    <td align="center"><img src="images/screenshot/list-tasks.png" width="400"><br><b>3. View tasks</b><br>Click a list</td>
+    <td align="center"><img src="images/screenshot/newlist.png" width="400"><br><b>4. Create a list</b><br><code>gt newlist Work 💼</code></td>
   </tr>
   <tr>
-    <td align="center"><img src="images/screenshot/del-task.png" width="400"><br><b>5. Delete a task</b><br><code>gt del</code> → confirm twice</td>
-    <td align="center"><img src="images/screenshot/del-list.png" width="400"><br><b>6. Delete a list</b><br><code>gt dellist</code> → confirm twice</td>
+    <td align="center"><img src="images/screenshot/new-task.png" width="400"><br><b>5. Add a task</b><br><code>gt new Review pull requests</code></td>
+    <td align="center"><img src="images/screenshot/del-task.png" width="400"><br><b>6. Delete a task</b><br><code>gt del</code> → confirm twice</td>
   </tr>
   <tr>
-    <td align="center"><img src="images/screenshot/extension-settings.png" width="400"><br><b>7. Preferences</b><br>Customize in Ulauncher</td>
-    <td></td>
+    <td align="center"><img src="images/screenshot/del-list.png" width="400"><br><b>7. Delete a list</b><br><code>gt dellist</code> → confirm twice</td>
+    <td align="center"><img src="images/screenshot/extension-settings.png" width="400"><br><b>8. Preferences</b><br>Customize in Ulauncher</td>
   </tr>
 </table>
 
@@ -226,7 +227,7 @@ Completed tasks are hidden by default unless you toggle **Show Completed Tasks**
 │   ├── checked.svg            # Green checkmark (completed state)
 │   ├── list.svg               # List icon
 │   ├── back.svg               # Back button arrow
-│   └── screenshot/            # Demo screenshots
+│   └── screenshot/            # Walkthrough screenshots
 ├── versions.json              # Extension API version mapping
 ├── manifest.json              # Extension metadata & user preferences
 ├── main.py                    # Ulauncher extension entry point
