@@ -198,16 +198,26 @@ Completed tasks are hidden by default unless you toggle **Show Completed Tasks**
 
 ## Screenshots
 
-| | |
-|---|---|---|
-| ![Task Lists](images/screenshot/lists.png) | ![List Tasks](images/screenshot/list-tasks.png) |
-| **Task Lists** — browse all lists | **List Tasks** — browse tasks inside a list |
-| ![New List](images/screenshot/newlist.png) | ![New Task](images/screenshot/new-task.png) |
-| **Create List** — `gt newlist Work 💼` → confirm | **Add Task** — `gt new Review pull requests` → confirm |
-| ![Delete Task](images/screenshot/del-task.png) | ![Delete List](images/screenshot/del-list.png) |
-| **Delete Task** — `gt del` → confirm twice | **Delete List** — `gt dellist` → confirm twice |
-| ![Settings](images/screenshot/extension-settings.png) | |
-| **Preferences** — customizable in Ulauncher | |
+1. **Browse lists** — type `gt` to see all your task lists
+   ![Task Lists](images/screenshot/lists.png)
+
+2. **View tasks** — click a list to see its tasks
+   ![List Tasks](images/screenshot/list-tasks.png)
+
+3. **Create a list** — `gt newlist Work 💼` → click to confirm
+   ![New List](images/screenshot/newlist.png)
+
+4. **Add a task** — `gt new Review pull requests` → click to confirm
+   ![New Task](images/screenshot/new-task.png)
+
+5. **Delete a task** — `gt del` → click to select, click again to confirm
+   ![Delete Task](images/screenshot/del-task.png)
+
+6. **Delete a list** — `gt dellist` → click to select, click again to confirm
+   ![Delete List](images/screenshot/del-list.png)
+
+7. **Preferences** — customize keyword, default list, and more
+   ![Settings](images/screenshot/extension-settings.png)
 
 ## File structure
 
