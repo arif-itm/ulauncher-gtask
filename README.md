@@ -32,7 +32,7 @@
 - **Search & filter** — type to instantly filter lists and tasks
 - **Toggle complete** — click to complete (strikethrough), click again to uncomplete
 - **Confirmation flow** — all destructive actions require a second click
-- **Customizable** — keyword, default list, completed visibility, result limit
+- **Customizable** — keyword, default list, completed visibility
 - **Zero dependencies** — pure Python stdlib, `no pip install`
 
 ## Screenshots
@@ -125,10 +125,10 @@ ulauncher --no-extensions --dev -v
 
 | Keyword | Context | Action |
 |---|---|---|
-| `gt` | lists level | Browse all task lists |
+| `gt` | lists level | Browse task lists (paginated, 8 per page) |
 | `gt <search>` | lists level | Filter task lists by name |
 | (click list) | lists level | Open list and show its tasks |
-| `gt` | inside list | Browse all tasks |
+| `gt` | inside list | Browse tasks (paginated, 7 per page) |
 | `gt <search>` | inside list | Filter tasks by title |
 | `gt new <title>` | any | Show confirm → add to current list (or default/first) |
 | `gt newlist <name>` | lists level | Show confirm → create new task list |
@@ -150,11 +150,10 @@ ulauncher --no-extensions --dev -v
 Open **Ulauncher Preferences → Extensions → Google Tasks**:
 
 | Preference | Description | Default |
-|---|---|---|
+|---|---|---|---|
 | Keyword | Trigger word for the extension | `gt` |
 | Default Task List | List used when adding tasks without selecting one first | *(first list)* |
 | Show Completed Tasks | Whether completed tasks appear in lists | `Hide` |
-| Result Limit | Maximum tasks to show per list (leave empty for no limit) | *(unlimited)* |
 
 ## Architecture
 
@@ -200,6 +199,7 @@ Open **Ulauncher Preferences → Extensions → Google Tasks**:
 
 All data is stored in `cache.json` in the extension directory. On first launch, the extension fetches all lists and tasks from Google and saves them locally.
 
+- **Pagination** — lists (8/page) and tasks (7/page) with `Previous page` / `Next page` controls at the bottom. New searches reset to page 0.
 - **Reads** (listing, searching, filtering) are served from disk cache — **under 1ms**
 - **Writes** (add, complete, uncomplete, delete) call the API first, then update the cache
 - The cache is never automatically re-synced from Google after initial fetch — only updated when you make changes
@@ -224,7 +224,8 @@ Completed tasks are hidden by default unless you toggle **Show Completed Tasks**
 │   ├── icon.svg               # Task icon (Google Tasks logo)
 │   ├── checked.svg            # Green checkmark (completed state)
 │   ├── list.svg               # List icon
-│   ├── back.svg               # Back button arrow
+│   ├── back.svg               # Back / previous page arrow
+│   ├── forward.svg            # Next page arrow
 │   └── screenshot/            # Walkthrough screenshots
 ├── versions.json              # Extension API version mapping
 ├── manifest.json              # Extension metadata & user preferences

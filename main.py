@@ -16,6 +16,9 @@ ICON = 'images/icon.svg'
 CHECKED = 'images/checked.svg'
 LIST_ICON = 'images/list.svg'
 BACK_ICON = 'images/back.svg'
+FORWARD_ICON = 'images/forward.svg'
+TASK_PAGE_SIZE = 7
+LIST_PAGE_SIZE = 8
 
 
 def strikethrough(text):
@@ -49,6 +52,8 @@ class GTaskExtension(Extension):
         self.preferences = {}
         self._auth_attempted = False
         self.cache_path = os.path.join(DIR, 'cache.json')
+        self.list_offset = 0
+        self.task_offset = 0
 
     def init_client(self):
         self.auth = GoogleTasksAuth(os.path.join(DIR, 'credentials.json'), os.path.join(DIR, 'token.json'))
@@ -83,7 +88,11 @@ class KeywordQueryEventListener(EventListener):
             return render([item('Failed to initialize Google Tasks client', on_enter=DoNothingAction())])
 
         if not query:
-            return (self._list_tasks if extension.selected_list_id else self._list_tasklists)(extension, '')
+            if extension.selected_list_id:
+                extension.task_offset = 0
+                return self._list_tasks(extension, '')
+            extension.list_offset = 0
+            return self._list_tasklists(extension, '')
 
         parts = query.split(' ', 1)
         cmd = parts[0].lower()
@@ -92,6 +101,7 @@ class KeywordQueryEventListener(EventListener):
         if cmd == 'back':
             extension.selected_list_id = None
             extension.selected_list_title = None
+            extension.list_offset = 0
             return self._list_tasklists(extension, '')
 
         if cmd == 'new':
@@ -111,7 +121,9 @@ class KeywordQueryEventListener(EventListener):
             return self._show_dellist_targets(extension, arg)
 
         if extension.selected_list_id:
+            extension.task_offset = 0
             return self._list_tasks(extension, query)
+        extension.list_offset = 0
         return self._list_tasklists(extension, query)
 
     def _render_not_authenticated(self, extension):
@@ -130,43 +142,63 @@ class KeywordQueryEventListener(EventListener):
 
     def _list_tasklists(self, extension, search):
         try:
-            lists = extension.client.list_tasklists().get('items', [])
+            all_lists = extension.client.list_tasklists().get('items', [])
         except Exception as e:
             logger.error(f'Failed to list task lists: {e}')
             return render([item(str(e), on_enter=DoNothingAction())])
 
         if search:
             q = search.lower()
-            lists = [tl for tl in lists if q in tl['title'].lower()]
+            all_lists = [tl for tl in all_lists if q in tl['title'].lower()]
 
-        return render([
-            item(tl['title'], 'Google Task List', icon=LIST_ICON,
-                 data={'action': 'select_list', 'list_id': tl['id'], 'list_title': tl['title']})
-            for tl in lists
-        ]) if lists else render([
-            item('No task lists found', 'Create one in Google Tasks, then refresh', on_enter=DoNothingAction())
-        ])
+        if extension.list_offset == 0:
+            visible = all_lists[:LIST_PAGE_SIZE]
+            items = [
+                item(tl['title'], 'Google Task List', icon=LIST_ICON,
+                     data={'action': 'select_list', 'list_id': tl['id'], 'list_title': tl['title']})
+                for tl in visible
+            ]
+            if not items:
+                items.append(item('No task lists found', 'Create one in Google Tasks, then refresh', on_enter=DoNothingAction()))
+            if len(all_lists) > LIST_PAGE_SIZE:
+                items.append(item('Next page', icon=FORWARD_ICON, data={'action': 'next_page', 'is_task_view': False}))
+        else:
+            body = LIST_PAGE_SIZE - 1
+            visible = all_lists[extension.list_offset:extension.list_offset + body]
+            items = [item('Previous page', icon=BACK_ICON, data={'action': 'prev_page', 'is_task_view': False})]
+            items += [
+                item(tl['title'], 'Google Task List', icon=LIST_ICON,
+                     data={'action': 'select_list', 'list_id': tl['id'], 'list_title': tl['title']})
+                for tl in visible
+            ]
+            if not visible:
+                items.append(item('No task lists found', on_enter=DoNothingAction()))
+            if len(all_lists) > extension.list_offset + body:
+                items.append(item('Next page', icon=FORWARD_ICON, data={'action': 'next_page', 'is_task_view': False}))
+
+        return render(items)
 
     def _list_tasks(self, extension, search):
         try:
             show_completed = extension.preferences.get('show_completed', 'Hide') == 'Show'
-            result_limit = extension.preferences.get('result_limit', '').strip()
-            try:
-                max_results = int(result_limit) if result_limit else None
-            except ValueError:
-                max_results = None
-            tasks = extension.client.list_tasks(extension.selected_list_id, show_completed, max_results).get('items', [])
+            all_tasks = extension.client.list_tasks(extension.selected_list_id, show_completed).get('items', [])
         except Exception as e:
             logger.error(f'Failed to list tasks: {e}')
             return render([item(str(e), on_enter=DoNothingAction())])
 
         if search:
             q = search.lower()
-            tasks = [t for t in tasks if q in t['title'].lower()]
+            all_tasks = [t for t in all_tasks if q in t['title'].lower()]
 
-        items = [item('Back to lists', extension.selected_list_title or 'Task Lists',
-                      icon=BACK_ICON, data={'action': 'back'})]
-        for task in tasks:
+        visible = all_tasks[extension.task_offset:extension.task_offset + TASK_PAGE_SIZE]
+        items = []
+        if extension.task_offset == 0:
+            items.append(item('Back to lists', extension.selected_list_title or 'Task Lists',
+                              icon=BACK_ICON, data={'action': 'back'}))
+        else:
+            items.append(item('Previous page', icon=BACK_ICON,
+                              data={'action': 'prev_page', 'is_task_view': True}))
+        for task in visible:
             is_completed = task.get('status') == 'completed'
             notes = (task.get('notes') or '')[:100]
             due = task.get('due', '')
@@ -181,6 +213,10 @@ class KeywordQueryEventListener(EventListener):
             ))
         if len(items) == 1:
             items.append(item('No tasks found', 'Type "new <task>" to create a new task', on_enter=DoNothingAction()))
+        if len(all_tasks) > extension.task_offset + TASK_PAGE_SIZE:
+            items.append(item('Next page', icon=FORWARD_ICON,
+                         data={'action': 'next_page', 'is_task_view': True}))
+
         return render(items)
 
     def _add_task(self, extension, title):
@@ -262,11 +298,13 @@ class ItemEnterEventListener(EventListener):
         if action == 'select_list':
             extension.selected_list_id = data['list_id']
             extension.selected_list_title = data['list_title']
+            extension.task_offset = 0
             return kw._list_tasks(extension, '')
 
         if action == 'back':
             extension.selected_list_id = None
             extension.selected_list_title = None
+            extension.list_offset = 0
             return kw._list_tasklists(extension, '')
 
         if action == 'complete':
@@ -337,6 +375,22 @@ class ItemEnterEventListener(EventListener):
                 return kw._list_tasklists(extension, '')
             except Exception as e:
                 return render([item(f'Failed: {e}', on_enter=DoNothingAction())])
+
+        if action == 'prev_page':
+            if data.get('is_task_view', False):
+                extension.task_offset = max(0, extension.task_offset - TASK_PAGE_SIZE)
+                return kw._list_tasks(extension, '')
+            else:
+                extension.list_offset = max(0, extension.list_offset - LIST_PAGE_SIZE)
+                return kw._list_tasklists(extension, '')
+
+        if action == 'next_page':
+            if data.get('is_task_view', False):
+                extension.task_offset += TASK_PAGE_SIZE
+                return kw._list_tasks(extension, '')
+            else:
+                extension.list_offset += LIST_PAGE_SIZE
+                return kw._list_tasklists(extension, '')
 
         return render([item('Unknown action', on_enter=DoNothingAction())])
 
